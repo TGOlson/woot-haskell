@@ -1,5 +1,25 @@
 module Data.Woot where
 
+
+import Data.Woot.WString
+import Data.Woot.Operation
+
+
+data OperationQueue = OperationQueue [Operation] -- should be a TMVar
+
+
+-- do not expose constructor
+data WootHandler a = WootHandler
+    { wootHandlerString         :: WString -- should be a TMVar
+    , wootHandlerOperationQueue :: OperationQueue
+    , wootHandlerOnChange :: WString -> a
+    }
+
+
+makeWootHandler :: (WString -> a) -> WootHandler a
+makeWootHandler = WootHandler emptyWString (OperationQueue [])
+
+
 -- Haskell server is a passive peer in the process
 -- only needs a remote integration function
 

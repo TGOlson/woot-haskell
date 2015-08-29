@@ -1,14 +1,17 @@
 module Data.Woot.Core where
 
+
 import Data.Woot.WString
 import Data.Woot.WChar
 import Data.Woot.Operation
+
 
 -- return the new WString on success, on failure returns an integration error
 integrate :: Operation -> WString -> Either String WString
 integrate op ws = if canIntegrate op ws then Right $ integrateOp op ws else integrationError
   where
     integrationError = Left "Cannot integrate. Operation should be added to a queue and retried."
+
 
 integrateOp :: Operation -> WString -> WString
 integrateOp (Operation Insert _ wc) ws = integrateInsert (wCharPrevId wc) (wCharNextId wc) wc ws
