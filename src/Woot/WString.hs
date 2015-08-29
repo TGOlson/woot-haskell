@@ -1,0 +1,54 @@
+module Woot.WString where
+
+-- TODO: this will need to change to vector for updates
+
+-- import Data.Maybe (isJust)
+--
+-- import Control.Monad
+
+import Data.Vector ((!?), (//))
+import qualified Data.Vector as V
+
+import Woot.WChar
+
+data WString = WString (V.Vector WChar)
+
+instance Show WString where
+  show = toString
+
+toString :: WString -> String
+toString = V.toList . V.map wCharAlpha . visibleWChars
+
+emptyWString :: WString
+emptyWString = WString V.empty
+
+isEmpty :: WString -> Bool
+isEmpty (WString wcs) = V.null wcs
+
+visibleWChars :: WString -> V.Vector WChar
+visibleWChars (WString wcs) = V.filter wCharVisible wcs
+
+nthVisible :: Int -> WString -> Maybe WChar
+nthVisible n wcs = visibleWChars wcs !? n
+
+hasWChar :: WChar -> WString -> Bool
+hasWChar wc (WString wcs) = V.elem wc wcs
+
+insert :: Int -> WChar -> WString -> WString
+insert i wc (WString wcs) = WString $ wcs // [(i, wc)]
+
+indexOf :: WCharId -> WString -> Maybe Int
+indexOf wcid (WString wcs) = V.findIndex ((==) wcid . wCharId) wcs
+
+subsection :: WCharId -> WCharId -> WString -> WString
+subsection prev next ws@(WString wcs) = WString $ maybe V.empty slice indices
+  where
+    prevIndex = indexOf prev ws
+    nextIndex = indexOf next ws
+    indices = sequence [prevIndex, nextIndex]
+    slice (i:j:[]) = V.slice i j wcs
+    -- should never reach this case since we own the indices coming in
+    slice _ = V.empty
+
+
+-- subsection
