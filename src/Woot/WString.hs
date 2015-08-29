@@ -2,11 +2,11 @@ module Woot.WString where
 
 -- TODO: this will need to change to vector for updates
 
--- import Data.Maybe (isJust)
+import Data.Maybe (isJust)
 --
 -- import Control.Monad
 
-import Data.Vector ((!?), (//))
+import Data.Vector ((!?))
 import qualified Data.Vector as V
 
 import Woot.WChar
@@ -31,14 +31,21 @@ visibleWChars (WString wcs) = V.filter wCharVisible wcs
 nthVisible :: Int -> WString -> Maybe WChar
 nthVisible n wcs = visibleWChars wcs !? n
 
-hasWChar :: WChar -> WString -> Bool
-hasWChar wc (WString wcs) = V.elem wc wcs
 
+-- insert before index i
+-- insert 2 'x' "abc" -> abxc
 insert :: Int -> WChar -> WString -> WString
-insert i wc (WString wcs) = WString $ wcs // [(i, wc)]
+insert i wc (WString wcs) = WString $ V.concat [front, V.singleton wc, back]
+  where
+    front = V.take i wcs
+    back = V.drop i wcs
+    -- parts = V.splitAt i wcs
 
 indexOf :: WCharId -> WString -> Maybe Int
 indexOf wcid (WString wcs) = V.findIndex ((==) wcid . wCharId) wcs
+
+hasWChar :: WCharId -> WString -> Bool
+hasWChar wcid ws = isJust $ indexOf wcid ws
 
 subsection :: WCharId -> WCharId -> WString -> WString
 subsection prev next ws@(WString wcs) = WString $ maybe V.empty slice indices
@@ -46,7 +53,7 @@ subsection prev next ws@(WString wcs) = WString $ maybe V.empty slice indices
     prevIndex = indexOf prev ws
     nextIndex = indexOf next ws
     indices = sequence [prevIndex, nextIndex]
-    slice (i:j:[]) = V.slice i j wcs
+    slice ([i, j]) = V.slice i j wcs
     -- should never reach this case since we own the indices coming in
     slice _ = V.empty
 
