@@ -1,11 +1,8 @@
--- integrations operations into a WString
--- find a better place for this
--- should be moved to Woot.Core
-module Woot.Integrate where
+module Data.Woot.Core where
 
-import Woot.WString
-import Woot.WChar
-import Woot.Operation
+import Data.Woot.WString
+import Data.Woot.WChar
+import Data.Woot.Operation
 
 -- return the new WString on success, on failure returns an integration error
 integrate :: Operation -> WString -> Either String WString

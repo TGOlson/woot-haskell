@@ -1,15 +1,10 @@
-module Woot.WString where
-
--- TODO: this will need to change to vector for updates
+module Data.Woot.WString where
 
 import Data.Maybe (isJust)
---
--- import Control.Monad
-
 import Data.Vector ((!?))
 import qualified Data.Vector as V
 
-import Woot.WChar
+import Data.Woot.WChar
 
 data WString = WString (V.Vector WChar)
 

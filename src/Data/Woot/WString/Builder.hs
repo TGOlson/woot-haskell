@@ -1,6 +1,6 @@
 -- -- utility for building WStrings
 --
-module Woot.WString.Builder where
+module Data.Woot.WString.Builder where
 --
 -- import Woot.WString
 -- import Woot.WChar

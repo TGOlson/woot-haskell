@@ -1,10 +1,4 @@
-module Woot
-  ( module Woot.WString
-  , module Woot.WChar
-  ) where
-
-import Woot.WString
-import Woot.WChar
+module Data.Woot where
 
 -- Haskell server is a passive peer in the process
 -- only needs a remote integration function

@@ -1,4 +1,4 @@
-module Woot.WChar where
+module Data.Woot.WChar where
 
 
 data WChar = WChar

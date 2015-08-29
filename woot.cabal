@@ -17,13 +17,13 @@ extra-source-files:  README.md
 cabal-version:       >=1.10
 
 library
-  exposed-modules:       Woot
-                       , Woot.WChar
-                       , Woot.WString
+  exposed-modules:       Data.Woot
+                       , Data.Woot.Core
+                       , Data.Woot.WChar
+                       , Data.Woot.WString
 
-  other-modules:         Woot.Operation
-                       , Woot.Integrate
-                       , Woot.WString.Builder
+  other-modules:         Data.Woot.Operation
+                       , Data.Woot.WString.Builder
   -- other-extensions:
   build-depends:       base >=4.7 && <4.8, vector
   hs-source-dirs:      src

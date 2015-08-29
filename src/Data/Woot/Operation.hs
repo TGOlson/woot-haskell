@@ -1,6 +1,6 @@
-module Woot.Operation where
+module Data.Woot.Operation where
 
-import Woot.WChar
+import Data.Woot.WChar
 
 data OperationType = Insert | Delete
 
