@@ -11,13 +11,13 @@ data WChar = WChar
     , wCharAlpha   :: Char
     , wCharPrevId  :: Maybe WCharId
     , wCharNextId  :: Maybe WCharId
-    } deriving (Eq)
+    } deriving (Eq, Show)
 
 
 data WCharId = WCharId
     { wCharIdHostId :: Int
     , wCharIdClock  :: Int
-    } deriving (Eq)
+    } deriving (Eq, Show)
 
 
 instance Ord WCharId where

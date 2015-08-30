@@ -42,3 +42,8 @@ validDeleteOp = Operation Delete 0
 invalidDeleteOp :: Operation
 invalidDeleteOp = Operation Delete 0
     (WChar (WCharId 0 50) True 'M' (Just $ WCharId 0 (-1)) (Just $ WCharId 0 1))
+
+
+validInsertToValidateDelete :: Operation
+validInsertToValidateDelete = Operation Insert 0
+    (WChar (WCharId 0 50) True 'M' (Just $ WCharId 0 0) (Just $ WCharId 0 2))

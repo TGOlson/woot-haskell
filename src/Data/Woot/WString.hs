@@ -44,7 +44,9 @@ visibleWChars :: WString -> V.Vector WChar
 visibleWChars = V.filter wCharVisible . wStringChars
 
 
--- is this used?
+-- this is used for local integration only
+-- locally we only deal with visible chars (insert at x, delete y)
+
 -- nthVisible :: Int -> WString -> Maybe WChar
 -- nthVisible n wcs = visibleWChars wcs !? n
 

@@ -1,3 +1,5 @@
+{-# LANGUAGE TupleSections #-}
+
 module Data.Woot.Core
     ( integrate
     , integrateAll
@@ -16,7 +18,13 @@ integrate op ws = if canIntegrate op ws then Just $ integrateOp op ws else Nothi
 -- iterate through operation list until stable
 -- return any remaining operations, along with new string
 integrateAll :: [Operation] -> WString -> ([Operation], WString)
-integrateAll = undefined
+integrateAll ops ws = let (newOps, newString) = result in
+    if length ops == length newOps
+        then result
+        else integrateAll newOps newString
+  where
+    result = foldl integrate' ([], ws) ops
+    integrate' (ops', s) op = maybe (ops' ++ [op], s) (ops',) (integrate op s)
 
 
 canIntegrate :: Operation -> WString -> Bool
@@ -31,6 +39,8 @@ integrateOp (Operation Delete _ wc) ws = integrateDelete wc ws
 
 
 integrateInsert :: Maybe WCharId -> Maybe WCharId -> WChar -> WString -> WString
+-- if char already exists
+integrateInsert _ _ wc ws | hasChar (wCharId wc) ws = ws
 -- if at the very start or end of the wString
 integrateInsert Nothing _ wc ws = insertChar 1 wc ws
 integrateInsert _ Nothing wc ws = insertChar (lengthW ws - 2) wc ws
