@@ -3,6 +3,10 @@ module Data.Woot
     , makeWootClient
     , makeWootClientEmpty
     , sendOperation
+    , sendOperations
+    , sendLocalDelete
+    , sendLocalInsert
+    , wootClientString
     ) where
 
 
@@ -10,35 +14,71 @@ import Data.Woot.WString.Builder
 import Data.Woot.WString
 import Data.Woot.WChar
 import Data.Woot.Operation
+import Data.Woot.Core
 
 
 -- data OperationQueue = OperationQueue [Operation] -- should be a TMVar
 
 
 -- do not expose constructor
-data WootClient a = WootClient
-    { _wootClientId             :: Int
-    , _wootClientClock          :: Int
-    , _wootClientString         :: WString -- should be a TMVar
-    , _wootClientOperationQueue :: [Operation]
-    , _wootClientOnChange       :: WString -> a
+data WootClient = WootClient
+    { wootClientId             :: Int
+    , wootClientClock          :: Int
+    , wootClientString         :: WString
+    , wootClientOperationQueue :: [Operation]
     }
 
+-- data WootClientMutable = WootClientMutable
+--     { wootClientId             :: Int
+--     , wootClientClock          :: Int
+--     , wootClientString         :: IO WString
+--     , wootClientOperationQueue :: IO [Operation]
+--     }
 
-makeWootClient :: ClientId -> (WString -> a) -> WString -> WootClient a
-makeWootClient cid f ws = WootClient cid 0 ws [] f
 
 
-makeWootClientEmpty :: ClientId -> (WString -> a) -> WootClient a
-makeWootClientEmpty cid f = makeWootClient cid f $ makeEmptyWString cid
+makeWootClient :: ClientId -> WString -> WootClient
+makeWootClient cid ws = WootClient cid 0 ws []
 
 
-sendOperation :: WootClient a -> Operation -> a
--- get current operation queue
--- cons new operation to front
--- integrateAll opQueue currentString
--- invoke change handler
-sendOperation = undefined
+makeWootClientEmpty :: ClientId -> WootClient
+makeWootClientEmpty cid = makeWootClient cid $ makeEmptyWString cid
+
+
+-- note: local operations can throw index error if passed illegal indicies
+sendLocalDelete :: Int -> WootClient -> WootClient
+sendLocalDelete pos client = sendOperation op client
+  where
+    op = Operation Delete (wootClientId client) $ hide (nthVisible pos $ wootClientString client)
+
+-- TODO: increment clocks on both local ops ^^^ \/ \/
+
+sendLocalInsert :: Int -> Char -> WootClient -> WootClient
+sendLocalInsert pos a client@(WootClient cid clock ws _) = sendOperation op client
+  where
+    op = Operation Insert cid char
+    char = WChar (WCharId cid clock) True a (Just $ wCharId prev) (Just $ wCharId next)
+    prev = nthVisible (pos - 1) ws
+    next = nthVisible pos ws
+
+
+sendOperation :: Operation -> WootClient -> WootClient
+sendOperation op (WootClient cid clock ws ops) = WootClient cid clock ws' ops'
+    where
+      (ops', ws') = integrateAll (op:ops) ws
+
+
+sendOperations :: [Operation] -> WootClient -> WootClient
+sendOperations ops client = foldl (flip sendOperation) client ops
+    -- where
+      -- (ops', ws') = integrateAll (op:ops) ws
+
+
+-- makeWootClientMutable :: WootClient IO
+
+-- sendOperationMutable :: Operation -> WootClient IO -> IO ()
+
+
 
 -- Haskell server is a passive peer in the process
 -- only needs a remote integration function
@@ -63,3 +103,5 @@ sendOperation = undefined
 
 -- https://hackage.haskell.org/package/websockets-0.9.5.0/docs/Network-WebSockets.html
 -- receiveDataMessage connection -> onRemoteOperation
+
+-- runStatefulWootClient ::

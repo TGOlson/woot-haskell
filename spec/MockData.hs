@@ -1,6 +1,5 @@
 module MockData where
 
-import Data.Vector
 
 import Data.Woot.Operation
 import Data.Woot.WChar
@@ -8,7 +7,7 @@ import Data.Woot.WString
 
 
 mockWString :: WString
-mockWString = WString $ fromList [
+mockWString = fromList [
       WChar (WCharId 0 (-2)) False '_' Nothing                 (Just $ WCharId 0 1)
     , WChar (WCharId 0 0)    True  'b' (Just $ WCharId 0 (-1)) (Just $ WCharId 0 1)
     , WChar (WCharId 0 1)    False 'x' (Just $ WCharId 0 0)    (Just $ WCharId 0 2)

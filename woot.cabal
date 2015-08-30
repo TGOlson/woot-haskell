@@ -22,9 +22,9 @@ library
                      , Data.Woot.Operation
                      , Data.Woot.WChar
                      , Data.Woot.WString
+                     , Data.Woot.WString.Builder
 
   -- other-modules:       Data.Woot.Operation
-  --                    , Data.Woot.WString.Builder
   -- other-extensions:
   build-depends:       base <5.0
                      , vector

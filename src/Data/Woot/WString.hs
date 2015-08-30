@@ -8,6 +8,7 @@ module Data.Woot.WString
     , indexOf
     , subsection
     , fromList
+    , nthVisible
     ) where
 
 
@@ -49,8 +50,8 @@ visibleWChars = V.filter wCharVisible . wStringChars
 -- this is used for local integration only
 -- locally we only deal with visible chars (insert at x, delete y)
 
--- nthVisible :: Int -> WString -> Maybe WChar
--- nthVisible n wcs = visibleWChars wcs !? n
+nthVisible :: Int -> WString -> WChar
+nthVisible n wcs = visibleWChars wcs ! n
 
 
 -- insert before index i
