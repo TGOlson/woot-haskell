@@ -5,8 +5,8 @@ data WChar = WChar
     { wCharId      :: WCharId
     , wCharVisible :: Bool
     , wCharAlpha   :: Char
-    , wCharPrevId  :: WCharId
-    , wCharNextId  :: WCharId
+    , wCharPrevId  :: Maybe WCharId
+    , wCharNextId  :: Maybe WCharId
     } deriving (Eq)
 
 

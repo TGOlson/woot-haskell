@@ -1,6 +1,16 @@
 # woot
 
 Real time group editor without Operational
-transformation (WOOT). This package provides the core library and logic for building a server capable and handling real time editing with WOOT.
+transformation (WOOT). This package provides the core library and logic for building a server capable and handling real time editing with WOOT. [Reference](https://hal.inria.fr/inria-00071240/document)
 
-[Ref](https://hal.inria.fr/inria-00071240/document)
+Install
+
+```
+$ cabal install woot
+```
+
+Test
+
+```
+cabal test
+```

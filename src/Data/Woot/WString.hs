@@ -10,6 +10,7 @@ import Data.Woot.WChar
 
 data WString = WString (V.Vector WChar)
 
+
 instance Show WString where
     show = toString
 
@@ -24,6 +25,10 @@ emptyWString = WString V.empty
 
 isEmpty :: WString -> Bool
 isEmpty (WString wcs) = V.null wcs
+
+
+length :: WString -> Int
+length (WString wcs) = V.length wcs
 
 
 visibleWChars :: WString -> V.Vector WChar
@@ -47,6 +52,7 @@ insert i wc (WString wcs) = WString $ V.concat [front, V.singleton wc, back]
 indexOf :: WCharId -> WString -> Maybe Int
 indexOf wcid (WString wcs) = V.findIndex ((==) wcid . wCharId) wcs
 
+
 hasWChar :: WCharId -> WString -> Bool
 hasWChar wcid ws = isJust $ indexOf wcid ws
 
@@ -57,6 +63,6 @@ subsection prev next ws@(WString wcs) = WString $ maybe V.empty slice indices
     prevIndex = indexOf prev ws
     nextIndex = indexOf next ws
     indices = sequence [prevIndex, nextIndex]
-    slice ([i, j]) = V.slice i j wcs
+    slice ([i, j]) = V.slice i (j - i) wcs
     -- should never reach this case since we own the indices coming in
     slice _ = V.empty

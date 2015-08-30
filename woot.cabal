@@ -3,9 +3,9 @@
 
 name:                woot
 version:             0.0.0.0
-synopsis:            Real time group editor without Operational
--- description:
-homepage:            https://github.com/TGOlson/woot
+synopsis:            Real time group editor without operational transform.
+description:         Without operation transform - WOOT.
+homepage:            https://github.com/TGOlson/woot-haskell
 license:             MIT
 -- license-file:        LICENSE
 author:              Tyler Olson
@@ -37,6 +37,7 @@ test-suite test
   type:                exitcode-stdio-1.0
   build-depends:       base <5.0
                      , hspec >=2.1 && <2.2
+                     , vector
                      , woot
 
   default-language:    Haskell2010

@@ -21,3 +21,7 @@ module Data.Woot.WString.Builder where
 -- -- try array for inserts
 -- initialString :: WString
 -- initialString = WString [beginningChar, endingChar]
+
+-- fromString :: Int -> String -> WString
+-- fromString sid s = WString $ V.fromList $ zipWith
+--     (\c i -> WChar (WCharId sid i) True c (WCharId sid (i - 1)) (WCharId sid (i + 1))) s [0..]
