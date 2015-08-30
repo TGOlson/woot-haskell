@@ -1,26 +1,39 @@
-module Data.Woot where
+module Data.Woot
+    ( WootClient
+    , makeWootClient
+    , makeWootClientEmpty
+    , sendOperation
+    ) where
 
 
+import Data.Woot.WString.Builder
 import Data.Woot.WString
+import Data.Woot.WChar
 import Data.Woot.Operation
 
 
-data OperationQueue = OperationQueue [Operation] -- should be a TMVar
+-- data OperationQueue = OperationQueue [Operation] -- should be a TMVar
 
 
 -- do not expose constructor
-data WootHandler a = WootHandler
-    { wootHandlerString         :: WString -- should be a TMVar
-    , wootHandlerOperationQueue :: OperationQueue
-    , wootHandlerOnChange       :: WString -> a
+data WootClient a = WootClient
+    { _wootClientId             :: Int
+    , _wootClientClock          :: Int
+    , _wootClientString         :: WString -- should be a TMVar
+    , _wootClientOperationQueue :: [Operation]
+    , _wootClientOnChange       :: WString -> a
     }
 
--- does this need to be exposed? maybe register?
--- makeWootHandler :: (WString -> a) -> WootHandler a
--- makeWootHandler = WootHandler emptyWString (OperationQueue [])
+
+makeWootClient :: ClientId -> (WString -> a) -> WString -> WootClient a
+makeWootClient cid f ws = WootClient cid 0 ws [] f
 
 
-sendOperation :: WootHandler a -> Operation -> a
+makeWootClientEmpty :: ClientId -> (WString -> a) -> WootClient a
+makeWootClientEmpty cid f = makeWootClient cid f $ makeEmptyWString cid
+
+
+sendOperation :: WootClient a -> Operation -> a
 -- get current operation queue
 -- cons new operation to front
 -- integrateAll opQueue currentString

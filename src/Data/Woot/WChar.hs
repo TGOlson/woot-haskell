@@ -1,6 +1,7 @@
 module Data.Woot.WChar
     ( WChar(..)
     , WCharId(..)
+    , ClientId
     , hide
     ) where
 
@@ -14,9 +15,12 @@ data WChar = WChar
     } deriving (Eq, Show)
 
 
+type ClientId = Int
+
+
 data WCharId = WCharId
-    { wCharIdHostId :: Int
-    , wCharIdClock  :: Int
+    { wCharIdClientId :: ClientId
+    , wCharIdClock    :: Int
     } deriving (Eq, Show)
 
 
@@ -25,7 +29,7 @@ instance Ord WCharId where
 
 
 compareCharIds :: WCharId -> WCharId -> Ordering
-compareCharIds (WCharId sA iA) (WCharId sB iB) = compare (sA, iA) (sB, iB)
+compareCharIds (WCharId cA iA) (WCharId cB iB) = compare (cA, iA) (cB, iB)
 
 
 hide :: WChar -> WChar

@@ -7,6 +7,7 @@ module Data.Woot.WString
     , hideChar
     , indexOf
     , subsection
+    , fromList
     ) where
 
 
@@ -30,7 +31,8 @@ toString = V.toList . V.map wCharAlpha . visibleWChars
 
 -- emptyWString :: WString
 -- emptyWString = WString V.empty
-
+fromList :: [WChar] -> WString
+fromList = WString . V.fromList
 
 isEmpty :: WString -> Bool
 isEmpty = V.null . wStringChars

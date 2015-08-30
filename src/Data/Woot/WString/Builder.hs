@@ -1,27 +1,22 @@
--- -- utility for building WStrings
---
 module Data.Woot.WString.Builder where
---
--- import Woot.WString
--- import Woot.WChar
---
--- endOfBufferWCharId :: WCharId
--- endOfBufferWCharId = WCharId (-1, -1)
---
--- makeEmptyChar :: WCharId -> WCharId -> WCharId -> WChar
--- makeEmptyChar wid prev next = WChar wid False '_' prev next
---
--- beginningChar :: WChar
--- beginningChar = makeEmptyChar (WCharId (0, 0)) endOfBufferWCharId (WCharId (0, 1))
---
--- endingChar :: WChar
--- endingChar = makeEmptyChar (WCharId (0, 1)) (WCharId (0, 0)) endOfBufferWCharId
---
---
--- -- try array for inserts
--- initialString :: WString
--- initialString = WString [beginningChar, endingChar]
 
--- fromString :: Int -> String -> WString
--- fromString sid s = WString $ V.fromList $ zipWith
---     (\c i -> WChar (WCharId sid i) True c (WCharId sid (i - 1)) (WCharId sid (i + 1))) s [0..]
+
+import Data.Woot.WString
+import Data.Woot.WChar
+
+
+beginningCharClock :: Int
+beginningCharClock = -1
+
+
+endingCharClock :: Int
+endingCharClock = -2
+
+
+makeEmptyWString :: ClientId -> WString
+makeEmptyWString cid = fromList
+    [ WChar beginId False '_' Nothing        (Just endId)
+    , WChar endId   False '_' (Just beginId) Nothing ]
+  where
+    beginId = WCharId cid beginningCharClock
+    endId = WCharId cid endingCharClock
