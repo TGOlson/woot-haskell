@@ -19,11 +19,12 @@ cabal-version:       >=1.10
 library
   exposed-modules:     Data.Woot
                      , Data.Woot.Core
+                     , Data.Woot.Operation
                      , Data.Woot.WChar
                      , Data.Woot.WString
 
-  other-modules:       Data.Woot.Operation
-                     , Data.Woot.WString.Builder
+  -- other-modules:       Data.Woot.Operation
+  --                    , Data.Woot.WString.Builder
   -- other-extensions:
   build-depends:       base <5.0
                      , vector

@@ -12,13 +12,20 @@ data OperationQueue = OperationQueue [Operation] -- should be a TMVar
 data WootHandler a = WootHandler
     { wootHandlerString         :: WString -- should be a TMVar
     , wootHandlerOperationQueue :: OperationQueue
-    , wootHandlerOnChange :: WString -> a
+    , wootHandlerOnChange       :: WString -> a
     }
 
+-- does this need to be exposed? maybe register?
+-- makeWootHandler :: (WString -> a) -> WootHandler a
+-- makeWootHandler = WootHandler emptyWString (OperationQueue [])
 
-makeWootHandler :: (WString -> a) -> WootHandler a
-makeWootHandler = WootHandler emptyWString (OperationQueue [])
 
+sendOperation :: WootHandler a -> Operation -> a
+-- get current operation queue
+-- cons new operation to front
+-- integrateAll opQueue currentString
+-- invoke change handler
+sendOperation = undefined
 
 -- Haskell server is a passive peer in the process
 -- only needs a remote integration function

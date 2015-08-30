@@ -1,14 +1,23 @@
-module Data.Woot.WString where
+module Data.Woot.WString
+    ( WString(..)
+    , isEmpty
+    , lengthW
+    , insertChar
+    , hasChar
+    , hideChar
+    , indexOf
+    , subsection
+    ) where
 
 
 import Data.Maybe (isJust)
-import Data.Vector ((!?))
+import Data.Vector ((//), (!))
 import qualified Data.Vector as V
 
 import Data.Woot.WChar
 
 
-data WString = WString (V.Vector WChar)
+newtype WString = WString { wStringChars :: V.Vector WChar } deriving (Eq)
 
 
 instance Show WString where
@@ -19,50 +28,53 @@ toString :: WString -> String
 toString = V.toList . V.map wCharAlpha . visibleWChars
 
 
-emptyWString :: WString
-emptyWString = WString V.empty
+-- emptyWString :: WString
+-- emptyWString = WString V.empty
 
 
 isEmpty :: WString -> Bool
-isEmpty (WString wcs) = V.null wcs
+isEmpty = V.null . wStringChars
 
 
-length :: WString -> Int
-length (WString wcs) = V.length wcs
+lengthW :: WString -> Int
+lengthW = V.length . wStringChars
 
 
 visibleWChars :: WString -> V.Vector WChar
-visibleWChars (WString wcs) = V.filter wCharVisible wcs
+visibleWChars = V.filter wCharVisible . wStringChars
 
 
-nthVisible :: Int -> WString -> Maybe WChar
-nthVisible n wcs = visibleWChars wcs !? n
+-- is this used?
+-- nthVisible :: Int -> WString -> Maybe WChar
+-- nthVisible n wcs = visibleWChars wcs !? n
 
 
 -- insert before index i
 -- insert 2 'x' "abc" -> abxc
-insert :: Int -> WChar -> WString -> WString
-insert i wc (WString wcs) = WString $ V.concat [front, V.singleton wc, back]
+insertChar :: Int -> WChar -> WString -> WString
+insertChar i wc (WString wcs) = WString $ V.concat [V.take i wcs, V.singleton wc, V.drop i wcs]
+
+
+hideChar :: WCharId -> WString -> WString
+hideChar wid ws@(WString wcs) = WString $ maybe wcs (\i -> wcs // [(i, hide $ wcs ! i)]) mindex
   where
-    front = V.take i wcs
-    back = V.drop i wcs
-    -- parts = V.splitAt i wcs
+    mindex = indexOf wid ws
 
 
 indexOf :: WCharId -> WString -> Maybe Int
-indexOf wcid (WString wcs) = V.findIndex ((==) wcid . wCharId) wcs
+indexOf wcid = V.findIndex ((==) wcid . wCharId) . wStringChars
 
 
-hasWChar :: WCharId -> WString -> Bool
-hasWChar wcid ws = isJust $ indexOf wcid ws
+hasChar :: WCharId -> WString -> Bool
+hasChar wcid ws = isJust $ indexOf wcid ws
 
 
 subsection :: WCharId -> WCharId -> WString -> WString
-subsection prev next ws@(WString wcs) = WString $ maybe V.empty slice indices
+subsection prev next ws = WString $ maybe V.empty slice indices
   where
     prevIndex = indexOf prev ws
     nextIndex = indexOf next ws
     indices = sequence [prevIndex, nextIndex]
-    slice ([i, j]) = V.slice i (j - i) wcs
+    slice ([i, j]) = V.slice i (j - i) (wStringChars ws)
     -- should never reach this case since we own the indices coming in
     slice _ = V.empty

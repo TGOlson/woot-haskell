@@ -1,4 +1,8 @@
-module Data.Woot.WChar where
+module Data.Woot.WChar
+    ( WChar(..)
+    , WCharId(..)
+    , hide
+    ) where
 
 
 data WChar = WChar
@@ -17,8 +21,12 @@ data WCharId = WCharId
 
 
 instance Ord WCharId where
-    compare = compareWCharIds
+    compare = compareCharIds
 
 
-compareWCharIds :: WCharId -> WCharId -> Ordering
-compareWCharIds (WCharId sA iA) (WCharId sB iB) = compare (sA, iA) (sB, iB)
+compareCharIds :: WCharId -> WCharId -> Ordering
+compareCharIds (WCharId sA iA) (WCharId sB iB) = compare (sA, iA) (sB, iB)
+
+
+hide :: WChar -> WChar
+hide (WChar wid _ a p n) = WChar wid False a p n
