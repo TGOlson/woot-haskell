@@ -7,7 +7,7 @@ synopsis:            Real time group editor without operational transform.
 description:         Without operation transform - WOOT.
 homepage:            https://github.com/TGOlson/woot-haskell
 license:             MIT
--- license-file:        LICENSE
+license-file:        LICENSE
 author:              Tyler Olson
 maintainer:          tydotg@gmail.com
 -- copyright:
@@ -15,6 +15,12 @@ category:            Data
 build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
+
+
+Source-repository head
+    Type:     git
+    Location: https://github.com/TGOlson/woot-haskell
+
 
 library
   exposed-modules:     Data.Woot
