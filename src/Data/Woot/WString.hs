@@ -1,6 +1,7 @@
 module Data.Woot.WString
     ( WString(..)
     , fromList
+    , toList
     , isEmpty
     , length'
     , (!)
@@ -24,15 +25,15 @@ newtype WString = WString { wStringChars :: V.Vector WChar } deriving (Eq)
 
 
 instance Show WString where
-    show = toString
-
-
-toString :: WString -> String
-toString = V.toList . V.map wCharAlpha . wStringChars . visibleChars
+    show = map wCharAlpha . toList . visibleChars
 
 
 fromList :: [WChar] -> WString
 fromList = WString . V.fromList
+
+
+toList :: WString -> [WChar]
+toList = V.toList . wStringChars
 
 
 isEmpty :: WString -> Bool
@@ -45,7 +46,7 @@ length' = V.length . wStringChars
 
 -- unsafe, make sure you know what you are doing
 (!) :: WString -> Int -> WChar
-(!) ws n= wStringChars ws V.! n
+(!) ws n = wStringChars ws V.! n
 
 
 indexOf :: WCharId -> WString -> Maybe Int
@@ -61,6 +62,7 @@ hideChar wid ws@(WString wcs) = WString $
     maybe wcs (\i -> wcs V.// [(i, hide $ ws ! i)]) mindex
   where
     mindex = indexOf wid ws
+
 
 -- insert before index i
 -- insert 2 'x' "abc" -> abxc

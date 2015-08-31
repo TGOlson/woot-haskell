@@ -3,8 +3,12 @@
 module Data.Woot.Core
     ( integrate
     , integrateAll
+    , makeDeleteOperation
+    , makeInsertOperation
     ) where
 
+
+import Data.Maybe (fromJust)
 
 import Data.Woot.WString
 import Data.Woot.WChar
@@ -33,7 +37,6 @@ canIntegrate (Operation Delete _ wc) ws = hasChar (wCharId wc) ws
 
 
 integrateOp :: Operation -> WString -> WString
--- do we need site id here?
 integrateOp (Operation Insert _ wc) ws = integrateInsert (wCharPrevId wc) (wCharNextId wc) wc ws
 integrateOp (Operation Delete _ wc) ws = integrateDelete wc ws
 
@@ -44,25 +47,34 @@ integrateInsert _ _ wc ws | hasChar (wCharId wc) ws = ws
 -- if at the very start or end of the wString
 integrateInsert Nothing _ wc ws = insertChar 1 wc ws
 integrateInsert _ Nothing wc ws = insertChar (length' ws - 2) wc ws
-
 integrateInsert (Just prevId) (Just nextId) wc ws = if isEmpty sub
     -- should always be safe to get index and insert since we have flagged this as 'canIntegrate'
-    -- but use a maybe anyways
-    then maybe ws (\i -> insertChar i wc ws) $ indexOf nextId ws
-    else compareIds [prevId, nextId]
+    then insertChar (fromJust $ indexOf nextId ws) wc ws
+    else compareIds $ map wCharId (toList sub) ++ [nextId]
   where
     sub = subsection prevId nextId ws
-
     compareIds :: [WCharId] -> WString
     -- current id is less than the previous id
-    -- is this possible? or should we only look at subsection
-    compareIds (prevId':_) | wCharId wc < prevId' = maybe ws (\i -> insertChar i wc ws) $ indexOf prevId' ws
+    compareIds (wid:_) | wCharId wc < wid = insertChar (fromJust $ indexOf wid ws) wc ws
      -- recurse to integrateInsert with next id in the subsection
-    compareIds (_:i:_) = integrateInsert (Just i) (Just nextId) wc ws
-    -- should next have a pattern fall through to here
-    -- but for good measure...
+    compareIds (_:wid:_) = integrateInsert (Just wid) (Just nextId) wc ws
+    -- should never have a match fall through to here, but for good measure...
     compareIds _  = ws
 
 
 integrateDelete :: WChar -> WString -> WString
 integrateDelete wc = hideChar (wCharId wc)
+
+
+-- note: making operations can throw index out of bounds errors - they are unsafe
+makeDeleteOperation :: ClientId -> Int -> WString -> Operation
+makeDeleteOperation cid pos ws = Operation Delete cid (nthVisible pos ws)
+
+
+makeInsertOperation :: ClientId -> Int -> Int -> Char -> WString -> Operation
+makeInsertOperation cid clock pos a ws = Operation Insert cid char
+  where
+    char = WChar (WCharId cid clock) True a (Just $ wCharId prev) (Just $ wCharId next)
+    prev = if pos == 0 then ws ! 0 else nthVisible (pos - 1) ws
+    next = if pos >= numVis then ws ! (length' ws - 1) else nthVisible pos ws
+    numVis = length' $ visibleChars ws
