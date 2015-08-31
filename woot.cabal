@@ -39,7 +39,6 @@ test-suite test
   type:                exitcode-stdio-1.0
   build-depends:       base <5.0
                      , hspec >=2.1 && <2.2
-                     , vector
                      , woot
 
   default-language:    Haskell2010
