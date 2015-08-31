@@ -14,3 +14,11 @@ Test
 ```
 cabal test
 ```
+
+Notes:
+
+* Haskell server is a passive peer in the process
+* only needs a remote integration function
+
+* https://github.com/kroky/woot/blob/master/src/woot.coffee
+* https://bitbucket.org/d6y/woot

@@ -1,19 +1,20 @@
 module Data.Woot.WString
     ( WString(..)
-    , isEmpty
-    , lengthW
-    , insertChar
-    , hasChar
-    , hideChar
-    , indexOf
-    , subsection
     , fromList
+    , isEmpty
+    , length'
+    , (!)
+    , indexOf
+    , hasChar
+    , insertChar
+    , hideChar
+    , visibleChars
     , nthVisible
+    , subsection
     ) where
 
 
 import Data.Maybe (isJust)
-import Data.Vector ((//), (!))
 import qualified Data.Vector as V
 
 import Data.Woot.WChar
@@ -27,43 +28,24 @@ instance Show WString where
 
 
 toString :: WString -> String
-toString = V.toList . V.map wCharAlpha . visibleWChars
+toString = V.toList . V.map wCharAlpha . wStringChars . visibleChars
 
 
--- emptyWString :: WString
--- emptyWString = WString V.empty
 fromList :: [WChar] -> WString
 fromList = WString . V.fromList
+
 
 isEmpty :: WString -> Bool
 isEmpty = V.null . wStringChars
 
 
-lengthW :: WString -> Int
-lengthW = V.length . wStringChars
+length' :: WString -> Int
+length' = V.length . wStringChars
 
 
-visibleWChars :: WString -> V.Vector WChar
-visibleWChars = V.filter wCharVisible . wStringChars
-
-
--- this is used for local integration only
--- locally we only deal with visible chars (insert at x, delete y)
-
-nthVisible :: Int -> WString -> WChar
-nthVisible n wcs = visibleWChars wcs ! n
-
-
--- insert before index i
--- insert 2 'x' "abc" -> abxc
-insertChar :: Int -> WChar -> WString -> WString
-insertChar i wc (WString wcs) = WString $ V.concat [V.take i wcs, V.singleton wc, V.drop i wcs]
-
-
-hideChar :: WCharId -> WString -> WString
-hideChar wid ws@(WString wcs) = WString $ maybe wcs (\i -> wcs // [(i, hide $ wcs ! i)]) mindex
-  where
-    mindex = indexOf wid ws
+-- unsafe, make sure you know what you are doing
+(!) :: WString -> Int -> WChar
+(!) ws n= wStringChars ws V.! n
 
 
 indexOf :: WCharId -> WString -> Maybe Int
@@ -72,6 +54,27 @@ indexOf wcid = V.findIndex ((==) wcid . wCharId) . wStringChars
 
 hasChar :: WCharId -> WString -> Bool
 hasChar wcid ws = isJust $ indexOf wcid ws
+
+
+hideChar :: WCharId -> WString -> WString
+hideChar wid ws@(WString wcs) = WString $
+    maybe wcs (\i -> wcs V.// [(i, hide $ ws ! i)]) mindex
+  where
+    mindex = indexOf wid ws
+
+-- insert before index i
+-- insert 2 'x' "abc" -> abxc
+insertChar :: Int -> WChar -> WString -> WString
+insertChar i wc (WString wcs) = WString $ V.concat [V.take i wcs, V.singleton wc, V.drop i wcs]
+
+
+visibleChars :: WString -> WString
+visibleChars = WString . V.filter wCharVisible . wStringChars
+
+
+-- equally unsafe
+nthVisible :: Int -> WString -> WChar
+nthVisible n = (! n) . visibleChars
 
 
 subsection :: WCharId -> WCharId -> WString -> WString

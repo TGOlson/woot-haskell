@@ -43,7 +43,7 @@ integrateInsert :: Maybe WCharId -> Maybe WCharId -> WChar -> WString -> WString
 integrateInsert _ _ wc ws | hasChar (wCharId wc) ws = ws
 -- if at the very start or end of the wString
 integrateInsert Nothing _ wc ws = insertChar 1 wc ws
-integrateInsert _ Nothing wc ws = insertChar (lengthW ws - 2) wc ws
+integrateInsert _ Nothing wc ws = insertChar (length' ws - 2) wc ws
 
 integrateInsert (Just prevId) (Just nextId) wc ws = if isEmpty sub
     -- should always be safe to get index and insert since we have flagged this as 'canIntegrate'

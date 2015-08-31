@@ -24,8 +24,9 @@ library
                      , Data.Woot.WString
                      , Data.Woot.WString.Builder
 
-  -- other-modules:       Data.Woot.Operation
-  -- other-extensions:
+  -- other-modules:
+  default-extensions:  TupleSections
+
   build-depends:       base <5.0
                      , vector
   hs-source-dirs:      src
