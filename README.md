@@ -31,5 +31,7 @@ TODO:
 * docs
 * examples
 
-* Expose data types like `Operation` and `WChar` form core export
-* Have `sendOperation` to the client as the first arg
+* Expose data types like `Operation` and `WChar` from core export (and evaluate core exports)
+* Have `sendOperation` take the client as the first arg
+* Expose a `buildOperation` function to build ops (return `Maybe`)
+* Consider ditching `sendLocalOperation` in favor of building ops (easier to tell user if building the operation failed)
