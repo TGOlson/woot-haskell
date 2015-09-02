@@ -35,3 +35,4 @@ TODO:
 * Have `sendOperation` take the client as the first arg
 * Expose a `buildOperation` function to build ops (return `Maybe`)
 * Consider ditching `sendLocalOperation` in favor of building ops (easier to tell user if building the operation failed)
+* swap order on `makeWootClient :: ClientId -> WString -> WootClient` (take `WString` first)
