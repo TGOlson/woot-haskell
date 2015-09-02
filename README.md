@@ -1,7 +1,9 @@
 # woot
 
-Real time group editor without Operational
-transformation (WOOT). This package provides the core library and logic for building a server capable and handling real time editing with WOOT. [Reference](https://hal.inria.fr/inria-00071240/document)
+Core library for creating real time collaborative documents without Operational
+transformation (WOOT). This package provides the core logic and data types for building a server capable and handling real time editing with WOOT.
+
+[Reference](https://hal.inria.fr/inria-00071240/document)
 
 Install
 
@@ -28,3 +30,6 @@ TODO:
 * ci
 * docs
 * examples
+
+* Expose data types like `Operation` and `WChar` form core export
+* Have `sendOperation` to the client as the first arg
