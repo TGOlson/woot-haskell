@@ -22,3 +22,9 @@ Notes:
 
 * https://github.com/kroky/woot/blob/master/src/woot.coffee
 * https://bitbucket.org/d6y/woot
+
+TODO:
+
+* ci
+* docs
+* examples
