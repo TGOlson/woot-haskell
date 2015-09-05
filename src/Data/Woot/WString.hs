@@ -4,7 +4,7 @@ module Data.Woot.WString
     , toList
     , isEmpty
     , length'
-    , (!)
+    , (!?)
     , indexOf
     , hasChar
     , insertChar
@@ -49,6 +49,10 @@ length' = V.length . wStringChars
 (!) ws n = wStringChars ws V.! n
 
 
+(!?) :: WString -> Int -> Maybe WChar
+(!?) ws n = wStringChars ws V.!? n
+
+
 indexOf :: WCharId -> WString -> Maybe Int
 indexOf wcid = V.findIndex ((==) wcid . wCharId) . wStringChars
 
@@ -74,9 +78,8 @@ visibleChars :: WString -> WString
 visibleChars = WString . V.filter wCharVisible . wStringChars
 
 
--- equally unsafe
-nthVisible :: Int -> WString -> WChar
-nthVisible n = (! n) . visibleChars
+nthVisible :: Int -> WString -> Maybe WChar
+nthVisible n = (!? n) . visibleChars
 
 
 subsection :: WCharId -> WCharId -> WString -> WString
@@ -85,6 +88,8 @@ subsection prev next ws = WString $ maybe V.empty slice indices
     prevIndex = indexOf prev ws
     nextIndex = indexOf next ws
     indices = sequence [prevIndex, nextIndex]
-    slice ([i, j]) = V.slice i (j - i) (wStringChars ws)
+    slice ([i, j]) = slice' i (j - i) (wStringChars ws)
     -- should never reach this case since we own the indices coming in
     slice _ = V.empty
+    -- safe version of slice - returns empty string when passed illegal indices
+    slice' i n = V.take n . V.drop i

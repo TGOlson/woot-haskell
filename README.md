@@ -32,6 +32,4 @@ TODO:
 * examples
 
 * `WString.subsection` should not have an index error
-* Expose a `buildOperation` function to build ops (return `Maybe`)
 * Consider ditching `sendLocalOperation` in favor of building ops (easier to tell user if building the operation failed)
-* swap order on `makeWootClient :: ClientId -> WString -> WootClient` (take `WString` first)

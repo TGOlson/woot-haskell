@@ -29,7 +29,7 @@ data WootClient = WootClient
     , wootClientClock          :: Int
     , wootClientString         :: WString
     , wootClientOperationQueue :: [Operation]
-    }
+    } deriving (Eq, Show)
 
 
 incClock :: WootClient -> WootClient
@@ -44,25 +44,34 @@ makeWootClientEmpty :: ClientId -> WootClient
 makeWootClientEmpty cid = makeWootClient (makeEmptyWString cid) cid
 
 
-sendOperation :: Operation -> WootClient -> WootClient
-sendOperation op (WootClient cid clock ws ops) = WootClient cid clock ws' ops'
+sendOperation :: WootClient -> Operation -> WootClient
+sendOperation (WootClient cid clock ws ops) op = WootClient cid clock ws' ops'
     where
       (ops', ws') = integrateAll (op:ops) ws
 
 
-sendOperations :: [Operation] -> WootClient -> WootClient
-sendOperations ops client = foldl (flip sendOperation) client ops
+sendOperations :: WootClient -> [Operation] -> WootClient
+sendOperations = foldl sendOperation
 
 
--- note: local operations can throw index out of bounds errors - they are unsafe
+-- identical to sendOperation, but increments the clients internal clock
+-- most use cases should use sendLocalDelete or sendLocalInsert
+sendLocalOperation :: WootClient -> Operation -> WootClient
+sendLocalOperation client = incClock . sendOperation client
+
+
+-- note: local operations can result in no-ops if the underlying operation is invalid
 -- the assumption is that anything done locally should already be verified
-sendLocalDelete :: Int -> WootClient -> WootClient
-sendLocalDelete pos client = incClock $ sendOperation op client
+-- if you are concerned with whether the operation may have failed,
+-- try using makeDeleteOperation in conjunction with sendLocalOperation
+sendLocalDelete :: WootClient -> Int -> WootClient
+sendLocalDelete client pos = maybe client (sendLocalOperation client) op
   where
     op = makeDeleteOperation (wootClientId client) pos (wootClientString client)
 
 
-sendLocalInsert :: Int -> Char -> WootClient -> WootClient
-sendLocalInsert pos a client@(WootClient cid clock ws _) = incClock $ sendOperation op client
+sendLocalInsert :: WootClient -> Int -> Char -> WootClient
+sendLocalInsert client@(WootClient cid clock ws _) pos a =
+    maybe client (sendLocalOperation client) op
   where
     op = makeInsertOperation cid clock pos a ws

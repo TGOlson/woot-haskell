@@ -1,5 +1,3 @@
-{-# LANGUAGE TupleSections #-}
-
 module Data.Woot.Core
     ( integrate
     , integrateAll
@@ -66,15 +64,13 @@ integrateDelete :: WChar -> WString -> WString
 integrateDelete wc = hideChar (wCharId wc)
 
 
--- note: making operations can throw index out of bounds errors - they are unsafe
-makeDeleteOperation :: ClientId -> Int -> WString -> Operation
-makeDeleteOperation cid pos ws = Operation Delete cid (nthVisible pos ws)
+makeDeleteOperation :: ClientId -> Int -> WString -> Maybe Operation
+makeDeleteOperation cid pos ws = Operation Delete cid <$> nthVisible pos ws
 
 
-makeInsertOperation :: ClientId -> Int -> Int -> Char -> WString -> Operation
-makeInsertOperation cid clock pos a ws = Operation Insert cid char
-  where
-    char = WChar (WCharId cid clock) True a (Just $ wCharId prev) (Just $ wCharId next)
-    prev = if pos == 0 then ws ! 0 else nthVisible (pos - 1) ws
-    next = if pos >= numVis then ws ! (length' ws - 1) else nthVisible pos ws
-    numVis = length' $ visibleChars ws
+makeInsertOperation :: ClientId -> Int -> Int -> Char -> WString -> Maybe Operation
+makeInsertOperation cid clock pos a ws = Operation Insert cid <$> do
+    let numVis = length' $ visibleChars ws
+    prev <- if pos == 0 then ws !? 0 else nthVisible (pos - 1) ws
+    next <- if pos >= numVis then ws !? (length' ws - 1) else nthVisible pos ws
+    return $ WChar (WCharId cid clock) True a (Just $ wCharId prev) (Just $ wCharId next)
