@@ -20,12 +20,10 @@ integrate op ws = if canIntegrate op ws then Just $ integrateOp op ws else Nothi
 -- iterate through operation list until stable
 -- return any remaining operations, along with new string
 integrateAll :: [Operation] -> WString -> ([Operation], WString)
-integrateAll ops ws = let (newOps, newString) = result in
-    if length ops == length newOps
-        then result
-        else integrateAll newOps newString
+integrateAll ops ws = if length ops == length newOps then result
+    else integrateAll newOps newString
   where
-    result = foldl integrate' ([], ws) ops
+    result@(newOps, newString)  = foldl integrate' ([], ws) ops
     integrate' (ops', s) op = maybe (ops' ++ [op], s) (ops',) (integrate op s)
 
 

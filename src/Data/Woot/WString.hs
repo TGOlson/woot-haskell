@@ -15,7 +15,7 @@ module Data.Woot.WString
     ) where
 
 
-import Data.Maybe (isJust)
+import Data.Maybe (isJust, fromMaybe)
 import qualified Data.Vector as V
 
 import Data.Woot.WChar
@@ -83,13 +83,10 @@ nthVisible n = (!? n) . visibleChars
 
 
 subsection :: WCharId -> WCharId -> WString -> WString
-subsection prev next ws = WString $ maybe V.empty slice indices
+subsection prev next ws = WString . fromMaybe V.empty $ do
+    i <- indexOf prev ws
+    j <- indexOf next ws
+    return $ slice' i (j - i) (wStringChars ws)
   where
-    prevIndex = indexOf prev ws
-    nextIndex = indexOf next ws
-    indices = sequence [prevIndex, nextIndex]
-    slice ([i, j]) = slice' i (j - i) (wStringChars ws)
-    -- should never reach this case since we own the indices coming in
-    slice _ = V.empty
-    -- safe version of slice - returns empty string when passed illegal indices
+    -- safe version of slice - returns empty when passed illegal indices
     slice' i n = V.take n . V.drop i

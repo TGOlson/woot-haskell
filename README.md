@@ -30,6 +30,3 @@ TODO:
 * ci
 * docs
 * examples
-
-* `WString.subsection` should not have an index error
-* Consider ditching `sendLocalOperation` in favor of building ops (easier to tell user if building the operation failed)
