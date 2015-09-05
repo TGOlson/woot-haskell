@@ -6,6 +6,7 @@ module Data.Woot.Core
     ) where
 
 
+import Control.Applicative -- keep for ghc <7.10
 import Data.Maybe (fromJust)
 
 import Data.Woot.WString
