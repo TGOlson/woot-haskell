@@ -2,7 +2,7 @@
 -- see http://haskell.org/cabal/users-guide/
 
 name:                woot
-version:             0.0.0.2
+version:             0.0.0.3
 synopsis:            Real time group editor without operational transform.
 description:         Without operation transform - WOOT.
 homepage:            https://github.com/TGOlson/woot-haskell

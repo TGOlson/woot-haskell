@@ -8,12 +8,14 @@ module Data.Woot
     , makeWootClientEmpty
     , sendOperation
     , sendOperations
+    , sendLocalOperation
     , sendLocalDelete
     , sendLocalInsert
-    , Operation(..)
+    , WString(..)
     , WChar(..)
     , WCharId(..)
-    , WString(..)
+    , Operation(..)
+    , ClientId
     ) where
 
 

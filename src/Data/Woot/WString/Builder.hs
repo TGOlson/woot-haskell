@@ -1,4 +1,6 @@
-module Data.Woot.WString.Builder where
+module Data.Woot.WString.Builder
+    ( makeEmptyWString
+    ) where
 
 
 import Data.Woot.WString
