@@ -8,13 +8,13 @@ transformation (WOOT). This package provides the core logic and data types for b
 Install
 
 ```
-$ cabal install woot
+$ stack install woot
 ```
 
 Test
 
 ```
-cabal test
+stack test
 ```
 
 Notes:
@@ -33,3 +33,4 @@ TODO:
 
 * Expose data types like `Operation` and `WChar` form core export
 * Have `sendOperation` to the client as the first arg
+* `WString.subsection` should not have an index error
