@@ -19,4 +19,4 @@ makeEmptyWString cid = fromList
     , WChar endId   False '_' (Just beginId) Nothing ]
   where
     beginId = WCharId cid beginningCharClock
-    endId = WCharId cid endingCharClock
+    endId   = WCharId cid endingCharClock

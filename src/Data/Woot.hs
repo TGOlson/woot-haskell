@@ -10,8 +10,10 @@ module Data.Woot
     , sendOperations
     , sendLocalDelete
     , sendLocalInsert
-    -- TODO: figure out core exports
-    , WString
+    , Operation(..)
+    , WChar(..)
+    , WCharId(..)
+    , WString(..)
     ) where
 
 
@@ -22,7 +24,6 @@ import Data.Woot.Operation
 import Data.Woot.Core
 
 
--- do not expose constructor
 data WootClient = WootClient
     { wootClientId             :: Int
     , wootClientClock          :: Int
@@ -35,12 +36,12 @@ incClock :: WootClient -> WootClient
 incClock (WootClient cid clock ws ops) = WootClient cid (succ clock) ws ops
 
 
-makeWootClient :: ClientId -> WString -> WootClient
-makeWootClient cid ws = WootClient cid 0 ws []
+makeWootClient :: WString -> ClientId -> WootClient
+makeWootClient ws cid = WootClient cid 0 ws []
 
 
 makeWootClientEmpty :: ClientId -> WootClient
-makeWootClientEmpty cid = makeWootClient cid $ makeEmptyWString cid
+makeWootClientEmpty cid = makeWootClient (makeEmptyWString cid) cid
 
 
 sendOperation :: Operation -> WootClient -> WootClient

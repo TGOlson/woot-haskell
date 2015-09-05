@@ -7,7 +7,7 @@ import Test.Hspec
 
 
 wootClient :: WootClient
-wootClient = makeWootClient 0 mockWString
+wootClient = makeWootClient mockWString 0
 
 
 spec :: Spec

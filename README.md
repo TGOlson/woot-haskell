@@ -31,8 +31,6 @@ TODO:
 * docs
 * examples
 
-* Expose data types like `Operation` and `WChar` from core export (and evaluate core exports)
-* Have `sendOperation` take the client as the first arg
 * `WString.subsection` should not have an index error
 * Expose a `buildOperation` function to build ops (return `Maybe`)
 * Consider ditching `sendLocalOperation` in favor of building ops (easier to tell user if building the operation failed)
