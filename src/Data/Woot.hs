@@ -8,7 +8,6 @@ module Data.Woot
     , makeWootClientEmpty
     , sendOperation
     , sendOperations
-    , sendLocalOperation
     , sendLocalDelete
     , sendLocalInsert
     , WString(..)
@@ -19,7 +18,6 @@ module Data.Woot
     ) where
 
 
-import Data.Woot.WString.Builder
 import Data.Woot.WString
 import Data.Woot.WChar
 import Data.Woot.Operation
@@ -38,12 +36,14 @@ incClock :: WootClient -> WootClient
 incClock (WootClient cid clock ws ops) = WootClient cid (succ clock) ws ops
 
 
+-- TODO: should this check is the client id already exists in the provided string
+-- and then start the client clock at the correct value?
 makeWootClient :: WString -> ClientId -> WootClient
 makeWootClient ws cid = WootClient cid 0 ws []
 
 
 makeWootClientEmpty :: ClientId -> WootClient
-makeWootClientEmpty cid = makeWootClient (makeEmptyWString cid) cid
+makeWootClientEmpty = makeWootClient emptyWString
 
 
 sendOperation :: WootClient -> Operation -> WootClient
@@ -57,23 +57,23 @@ sendOperations = foldl sendOperation
 
 
 -- identical to sendOperation, but increments the clients internal clock
--- most use cases should use sendLocalDelete or sendLocalInsert
+-- not exposed - consumers should use sendLocalDelete or sendLocalInsert
 sendLocalOperation :: WootClient -> Operation -> WootClient
 sendLocalOperation client = incClock . sendOperation client
 
 
--- note: local operations can result in no-ops if the underlying operation is invalid
+-- note: failed local operations can result in no-ops if the underlying operation is invalid
+-- they will not be added to a client's operation queue
 -- the assumption is that anything done locally should already be verified
--- if you are concerned with whether the operation may have failed,
--- try using makeDeleteOperation in conjunction with sendLocalOperation
-sendLocalDelete :: WootClient -> Int -> WootClient
-sendLocalDelete client pos = maybe client (sendLocalOperation client) op
+-- if the local operation was successful, the operation should be broadcasted to other clients
+sendLocalDelete :: WootClient -> Int -> (Maybe Operation, WootClient)
+sendLocalDelete client pos = (op,) $ maybe client (sendLocalOperation client) op
   where
     op = makeDeleteOperation (wootClientId client) pos (wootClientString client)
 
 
-sendLocalInsert :: WootClient -> Int -> Char -> WootClient
+sendLocalInsert :: WootClient -> Int -> Char -> (Maybe Operation, WootClient)
 sendLocalInsert client@(WootClient cid clock ws _) pos a =
-    maybe client (sendLocalOperation client) op
+    (op,) $ maybe client (sendLocalOperation client) op
   where
     op = makeInsertOperation cid clock pos a ws

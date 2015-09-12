@@ -42,30 +42,30 @@ spec = do
 
     describe "sendLocalInsert" $ do
         it "should insert a new character" $ do
-            let client = sendLocalInsert (makeWootClientEmpty 0) 0 'T'
-            let client' = sendLocalInsert client 1 'y'
+            let (_, client) = sendLocalInsert (makeWootClientEmpty 0) 0 'T'
+            let (_, client') = sendLocalInsert client 1 'y'
             show (wootClientString client') `shouldBe` "Ty"
 
         it "should increment the client clock" $ do
-            let client = sendLocalInsert (makeWootClientEmpty 0) 0 'T'
-            let client' = sendLocalInsert client 1 'y'
+            let (_, client) = sendLocalInsert (makeWootClientEmpty 0) 0 'T'
+            let (_, client') = sendLocalInsert client 1 'y'
             wootClientClock client' `shouldBe` 2
 
         it "should return the original client when passed an invalid position" $ do
-            let client = sendLocalInsert wootClient 100 'x'
+            let (_, client) = sendLocalInsert wootClient 100 'x'
             client `shouldBe` wootClient
 
     describe "sendLocalDelete" $ do
         it "should delete a character" $ do
-            let client = sendLocalDelete wootClient 2
-            let client' = sendLocalDelete client 1
+            let (_, client) = sendLocalDelete wootClient 2
+            let (_, client') = sendLocalDelete client 1
             show (wootClientString client') `shouldBe` "b"
 
         it "should increment the client clock" $ do
-            let client = sendLocalDelete wootClient 2
-            let client' = sendLocalDelete client 1
+            let (_, client) = sendLocalDelete wootClient 2
+            let (_, client') = sendLocalDelete client 1
             wootClientClock client' `shouldBe` 2
 
         it "should return the original client when passed an invalid position" $ do
-            let client = sendLocalDelete wootClient 100
+            let (_, client) = sendLocalDelete wootClient 100
             client `shouldBe` wootClient
