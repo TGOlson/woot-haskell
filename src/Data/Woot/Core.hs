@@ -68,11 +68,11 @@ makeDeleteOperation cid pos ws = Operation Delete cid <$> nthVisible pos ws
 -- operations should only be concerned with the visible string
 makeInsertOperation :: ClientId -> Int -> Int -> Char -> WString -> Maybe Operation
 makeInsertOperation cid clock pos a ws = Operation Insert cid <$> do
-  let numVis = length $ show ws
+  -- let numVis = length $ show ws
 
   -- first check if we are trying to insert at the very beginning of the string
-  prev <- if pos == 0 then ws !? 0 else nthVisible (pos - 1) ws
+  prev <- nthVisible pos ws
 
   -- also see if the insert is being done at the very end of the string
-  next <- if pos == numVis then ws !? (lengthWS ws - 1) else nthVisible pos ws
+  next <- nthVisible (pos + 1) ws
   return $ WChar (WCharId cid clock) True a (wCharId prev) (wCharId next) Nothing

@@ -30,7 +30,10 @@ newtype WString = WString { wStringChars :: V.Vector WChar } deriving (Eq)
 
 
 instance Show WString where
-    show = map wCharAlpha . toList . visibleChars
+    -- get the visible characters, then remove any special characters
+    -- TODO: this could be more efficient by composing (init . tail) in vector form
+    -- (we know that the only special characters are at the beginning and end of the string)
+    show = map wCharAlpha . filter (isNothing . wCharSpecial) . toList . visibleChars
 
 
 emptyWString :: WString
