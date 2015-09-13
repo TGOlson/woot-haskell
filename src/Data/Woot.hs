@@ -33,7 +33,7 @@ data WootClient = WootClient
 
 
 incClock :: WootClient -> WootClient
-incClock (WootClient cid clock ws ops) = WootClient cid (succ clock) ws ops
+incClock client = client {wootClientClock = succ $ wootClientClock client}
 
 
 -- TODO: should this check is the client id already exists in the provided string
@@ -46,6 +46,9 @@ makeWootClientEmpty :: ClientId -> WootClient
 makeWootClientEmpty = makeWootClient emptyWString
 
 
+-- sends an operation to a woot client, returning a new woot client
+-- the operation will either be integrated into the woot client's string
+-- or it will be added to the client's interal operation queue to be tried again
 sendOperation :: WootClient -> Operation -> WootClient
 sendOperation (WootClient cid clock ws ops) op = WootClient cid clock ws' ops'
     where
@@ -76,4 +79,4 @@ sendLocalInsert :: WootClient -> Int -> Char -> (Maybe Operation, WootClient)
 sendLocalInsert client@(WootClient cid clock ws _) pos a =
     (op,) $ maybe client (sendLocalOperation client) op
   where
-    op = makeInsertOperation cid clock pos a ws
+    op = makeInsertOperation (WCharId cid clock) pos a ws

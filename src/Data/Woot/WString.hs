@@ -33,7 +33,7 @@ instance Show WString where
     -- get the visible characters, then remove any special characters
     -- TODO: this could be more efficient by composing (init . tail) in vector form
     -- (we know that the only special characters are at the beginning and end of the string)
-    show = map wCharAlpha . filter (isNothing . wCharSpecial) . toList . visibleChars
+    show = map wCharAlpha . toList . visibleChars
 
 
 emptyWString :: WString

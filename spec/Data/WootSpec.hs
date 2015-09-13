@@ -57,8 +57,8 @@ spec = do
 
     describe "sendLocalDelete" $ do
         it "should delete a character" $ do
-            let (_, client) = sendLocalDelete wootClient 3
-            let (_, client') = sendLocalDelete client 2
+            let (_, client) = sendLocalDelete wootClient 2
+            let (_, client') = sendLocalDelete client 1
             show (wootClientString client') `shouldBe` "b"
 
         it "should increment the client clock" $ do
