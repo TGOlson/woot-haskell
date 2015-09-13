@@ -4,13 +4,19 @@ module Data.Woot
     , wootClientClock
     , wootClientString
     , wootClientOperationQueue
+
+    -- Construction
     , makeWootClient
     , makeWootClientEmpty
+
+    -- Operation handling
     , sendOperation
     , sendOperations
     , sendLocalDelete
     , sendLocalInsert
-    , WString(..)
+
+    -- Useful data types from other modules
+    , WString
     , WChar(..)
     , WCharId(..)
     , Operation(..)
@@ -18,10 +24,10 @@ module Data.Woot
     ) where
 
 
-import Data.Woot.WString
-import Data.Woot.WChar
-import Data.Woot.Operation
 import Data.Woot.Core
+import Data.Woot.Operation
+import Data.Woot.WChar
+import Data.Woot.WString
 
 
 data WootClient = WootClient

@@ -11,7 +11,7 @@ data OperationType = Insert | Delete deriving (Eq, Show)
 
 
 data Operation = Operation
-    { operationType   :: OperationType
-    , operationSiteId :: Int
-    , operationWChar  :: WChar
+    { operationType     :: OperationType
+    , operationClientId :: Int
+    , operationWChar    :: WChar
     } deriving (Eq, Show)

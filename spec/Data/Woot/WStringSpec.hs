@@ -16,7 +16,7 @@ spec = do
 
     describe "insert" $
         it "should insert a character before the specified index" $
-            let newChar = WChar (WCharId 0 4) True  'P' (WCharId 0 1) (WCharId 0 2) Nothing in
+            let newChar = WChar (WCharId 0 4) True  'P' (WCharId 0 1) (WCharId 0 2) in
             show (insert newChar 4 mockWString) `shouldBe` "baPr"
 
     describe "subsection" $ do

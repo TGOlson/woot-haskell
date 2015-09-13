@@ -9,9 +9,9 @@ module Data.Woot.Core
 import Control.Applicative -- keep for ghc <7.10
 import Data.Maybe (fromJust)
 
-import Data.Woot.WString
-import Data.Woot.WChar
 import Data.Woot.Operation
+import Data.Woot.WChar
+import Data.Woot.WString
 
 
 integrate :: Operation -> WString -> Maybe WString
@@ -75,7 +75,7 @@ makeInsertOperation (WCharId cid clock) pos a ws = Operation Insert cid <$> do
 
     -- also see if the insert is being done at the very end of the string
     next <- if pos == numVis then endingChar else nthVisible pos ws
-    return $ WChar (WCharId cid clock) True a (wCharId prev) (wCharId next) Nothing
+    return $ WChar (WCharId cid clock) True a (wCharId prev) (wCharId next)
   where
     beginningChar = ws !? 0
     endingChar = ws !? (lengthWS ws - 1)

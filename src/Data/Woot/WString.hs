@@ -52,7 +52,7 @@ lengthWS :: WString -> Int
 lengthWS = V.length . wStringChars
 
 
--- unsafe, make sure you know what you are doing
+-- unsafe
 (!) :: WString -> Int -> WChar
 (!) ws n = wStringChars ws V.! n
 
