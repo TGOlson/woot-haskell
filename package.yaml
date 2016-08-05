@@ -1,5 +1,5 @@
 name:                woot
-version:             0.0.0.5
+version:             0.0.0.6
 synopsis:            Real time group editor without operational transform.
 description:         Without operation transform - WOOT.
 homepage:            https://github.com/TGOlson/woot-haskell
