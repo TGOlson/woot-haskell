@@ -14,7 +14,7 @@ github:              TGOlson/woot-haskell
 ghc-options: -Wall -Werror
 
 library:
-  source-dirs: src
+  source-dirs: lib
   exposed-modules:
     - Data.Woot
     - Data.Woot.Core

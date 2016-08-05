@@ -6,8 +6,8 @@ module Data.Woot.Core
     ) where
 
 
-import Control.Applicative -- keep for ghc <7.10
-import Data.Maybe (fromJust)
+import Data.Maybe  (fromJust)
+import Data.Monoid ((<>))
 
 import Data.Woot.Operation
 import Data.Woot.WChar
@@ -15,17 +15,22 @@ import Data.Woot.WString
 
 
 integrate :: Operation -> WString -> Maybe WString
-integrate op ws = if canIntegrate op ws then Just $ integrateOp op ws else Nothing
+integrate op ws =
+    if canIntegrate op ws
+        then Just $ integrateOp op ws
+        else Nothing
 
 
 -- iterate through operation list until stable
 -- return any remaining operations, along with new string
 integrateAll :: [Operation] -> WString -> ([Operation], WString)
-integrateAll ops ws = if length ops == length newOps then result
-    else integrateAll newOps newString
+integrateAll ops ws =
+    if length ops == length newOps
+        then result
+        else integrateAll newOps newString
   where
     result@(newOps, newString)  = foldl integrate' ([], ws) ops
-    integrate' (ops', s) op = maybe (ops' ++ [op], s) (ops',) (integrate op s)
+    integrate' (ops', s) op = maybe (ops' <> [op], s) (ops',) (integrate op s)
 
 
 canIntegrate :: Operation -> WString -> Bool
@@ -44,7 +49,7 @@ integrateInsert _ _ wc ws | contains (wCharId wc) ws = ws
 integrateInsert prevId nextId wc ws = if isEmpty sub
     -- should always be safe to get index and insert since we have flagged this as 'canIntegrate'
     then insert wc (fromJust $ indexOf nextId ws) ws
-    else compareIds $ map wCharId (toList sub) ++ [nextId]
+    else compareIds $ fmap wCharId (toList sub) <> [nextId]
   where
     sub = subsection prevId nextId ws
     compareIds :: [WCharId] -> WString
@@ -78,4 +83,4 @@ makeInsertOperation (WCharId cid clock) pos a ws = Operation Insert cid <$> do
     return $ WChar (WCharId cid clock) True a (wCharId prev) (wCharId next)
   where
     beginningChar = ws !? 0
-    endingChar = ws !? (lengthWS ws - 1)
+    endingChar    = ws !? (lengthWS ws - 1)

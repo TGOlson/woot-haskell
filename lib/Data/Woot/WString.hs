@@ -20,7 +20,7 @@ module Data.Woot.WString
     ) where
 
 
-import Data.Maybe
+import           Data.Maybe  (fromMaybe, isJust)
 import qualified Data.Vector as V
 
 import Data.Woot.WChar
@@ -33,7 +33,7 @@ instance Show WString where
     -- get the visible characters, then remove any special characters
     -- TODO: this could be more efficient by composing (init . tail) in vector form
     -- (we know that the only special characters are at the beginning and end of the string)
-    show = map wCharAlpha . toList . visibleChars
+    show = fmap wCharAlpha . toList . visibleChars
 
 
 emptyWString :: WString
