@@ -1,0 +1,66 @@
+name:                woot
+version:             0.0.0.5
+synopsis:            Real time group editor without operational transform.
+description:         Without operation transform - WOOT.
+homepage:            https://github.com/TGOlson/woot-haskell
+license:             MIT
+license-file:        LICENSE
+author:              Tyler Olson
+maintainer:          tydotg@gmail.com
+category:            Data
+extra-source-files:  README.md
+github:              TGOlson/woot-haskell
+
+ghc-options: -Wall -Werror
+
+library:
+  source-dirs: src
+  exposed-modules:
+    - Data.Woot
+    - Data.Woot.Core
+    - Data.Woot.Operation
+    - Data.Woot.WChar
+    - Data.Woot.WString
+
+default-extensions:
+  - TupleSections
+  # - ConstraintKinds
+  # - DataKinds
+  # - DeriveDataTypeable
+  # - ExistentialQuantification
+  # - FlexibleContexts
+  # - FlexibleInstances
+  # - FunctionalDependencies
+  # - GADTs
+  # - GeneralizedNewtypeDeriving
+  # - LambdaCase
+  # - MultiParamTypeClasses
+  # - MultiWayIf
+  # - NamedFieldPuns
+  # - OverloadedStrings
+  # - QuasiQuotes
+  # - RankNTypes
+  # - RecordWildCards
+  # - ScopedTypeVariables
+  # - StandaloneDeriving
+  # - TemplateHaskell
+  # - TupleSections
+  # - TypeFamilies
+  # - TypeOperators
+  # - TypeSynonymInstances
+  # - ViewPatterns
+
+
+tests:
+  test:
+    main: "Spec.hs"
+    source-dirs:
+      - spec
+
+    dependencies:
+      - hspec
+      - woot
+
+dependencies:
+  - base
+  - vector
